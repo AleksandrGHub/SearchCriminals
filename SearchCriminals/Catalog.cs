@@ -4,7 +4,6 @@
     {
         private Random _random = new Random();
 
-        private List<string> _nationalitys = new List<string>() { "Китаец", "Бразилец", "Мексиканец", "Испанец", "Итальянец" };
         private List<Criminal> _criminals = new List<Criminal>();
 
         public Catalog()
@@ -15,7 +14,6 @@
         public void ShowCriminals()
         {
             string nationality;
-            string state;
 
             int height;
             int weight;
@@ -33,22 +31,17 @@
             Console.Write("Национальность: ");
             nationality = Console.ReadLine();
 
-            var criminals1 = from criminal in _criminals where criminal.Height == height select criminal;
-            var criminals2 = from criminal in criminals1 where criminal.Weight == weight select criminal;
-            var criminals3 = from criminal in criminals2 where criminal.Nationality == nationality select criminal;
-            var criminals4 = from criminal in criminals3 where criminal.IsArrested == false select criminal;
+            var criminals = from criminal in _criminals where criminal.Height == height where criminal.Weight == weight where criminal.Nationality == nationality where criminal.IsArrested == false select criminal;
 
-            if (criminals4.Count() == 0)
+            if (criminals.Count() == 0)
             {
                 Console.WriteLine("Совпадений не найдено!");
             }
             else
             {
-                foreach (var criminal in criminals4)
+                foreach (var criminal in criminals)
                 {
-                    state = criminal.IsArrested ? "под арестом" : "на свободе";
-
-                    Console.WriteLine($"{criminal.Surname} {criminal.Name} {criminal.Patronymic} {criminal.Height} см {criminal.Weight} кг {criminal.Nationality} {state}");
+                    Console.WriteLine("{0,10}{1,10}{2,18}{3,5} см{4,5} кг{5,10}", criminal.Surname, criminal.Name, criminal.Patronymic, criminal.Height, criminal.Weight, criminal.Nationality);
                 }
             }
 
@@ -67,11 +60,12 @@
             List<string> surnames = new List<string>() { "Иванов", "Смирнов", "Кузнецов", "Попов", "Васильев", "Петров", "Соколов", "Михайлов", "Новиков", "Федоров" };
             List<string> names = new List<string>() { "Сергей", "Дмитрий", "Андрей", "Алексей", "Максим", "Иван", "Роман", "Евгений", "Михаил", "Артем" };
             List<string> patronymics = new List<string>() { "Васильевич", "Викторович", "Витальевич", "Кириллович", "Константинович", "Леонидович", "Тимофеевич", "Федорович", "Николаевич", "Олегович" };
+            List<string> nationalitys = new List<string>() { "Китаец", "Бразилец", "Мексиканец", "Испанец", "Итальянец" };
             List<bool> states = new List<bool>() { true, false };
 
             for (int i = 0; i < numberCriminals; i++)
             {
-                _criminals.Add(new Criminal(surnames[_random.Next(surnames.Count)], names[_random.Next(names.Count)], patronymics[_random.Next(patronymics.Count)], _nationalitys[_random.Next(_nationalitys.Count)], _random.Next(minHeight, maxHeight), _random.Next(minWeight, maxWeight), _random.Next(states.Count) == index ? states[1] : states[0]));
+                _criminals.Add(new Criminal(surnames[_random.Next(surnames.Count)], names[_random.Next(names.Count)], patronymics[_random.Next(patronymics.Count)], nationalitys[_random.Next(nationalitys.Count)], _random.Next(minHeight, maxHeight), _random.Next(minWeight, maxWeight), _random.Next(states.Count) == index ? states[1] : states[0]));
             }
         }
 
@@ -79,12 +73,14 @@
         {
             Console.WriteLine("\nВарианты национальностей");
 
-            foreach (var nationality in _nationalitys)
+            var nationalitys = (from criminal in _criminals select criminal.Nationality).Distinct();
+
+            foreach (var nationality in nationalitys)
             {
                 Console.Write($"{nationality} ");
             }
 
-            Console.WriteLine();
+            Console.WriteLine("\n");
         }
 
         private int GetNumber()
