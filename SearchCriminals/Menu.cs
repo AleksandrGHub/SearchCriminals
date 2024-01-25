@@ -2,13 +2,14 @@
 {
     class Menu
     {
-        private const string ExitCommand = "Выход";
+        private string ExitCommand = "Выход";
 
         private Catalog _catalog = new Catalog();
 
         public void Work()
         {
             string userInput;
+
             do
             {
                 Console.Clear();

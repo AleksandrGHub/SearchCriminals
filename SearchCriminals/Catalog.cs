@@ -31,7 +31,7 @@
             Console.Write("Национальность: ");
             nationality = Console.ReadLine();
 
-            var criminals = from criminal in _criminals where criminal.Height == height where criminal.Weight == weight where criminal.Nationality == nationality where criminal.IsArrested == false select criminal;
+            var criminals = from criminal in _criminals where criminal.Height == height && criminal.Weight == weight && criminal.Nationality == nationality && criminal.IsArrested == false select criminal;
 
             if (criminals.Count() == 0)
             {
@@ -41,7 +41,7 @@
             {
                 foreach (var criminal in criminals)
                 {
-                    Console.WriteLine("{0,10}{1,10}{2,18}{3,5} см{4,5} кг{5,10}", criminal.Surname, criminal.Name, criminal.Patronymic, criminal.Height, criminal.Weight, criminal.Nationality);
+                    Console.WriteLine($"{criminal.Surname} {criminal.Name} {criminal.Patronymic}    рост {criminal.Height} см       вес {criminal.Weight} кг        {criminal.Nationality}");
                 }
             }
 
@@ -87,10 +87,11 @@
         {
             int number;
 
-            while (!Int32.TryParse(Console.ReadLine(), out number))
+            while (Int32.TryParse(Console.ReadLine(), out number) == false)
             {
                 Console.WriteLine("Введите число!");
             }
+
             return number;
         }
     }
